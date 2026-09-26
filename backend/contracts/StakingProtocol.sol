@@ -64,6 +64,37 @@ contract StakingProtocol {
         bool success = rewardToken.transfer(msg.sender, rewardsToSend);
         require(success, "Claiming rewards failed");
     }
+
+    function withdrawAmount(uint256 amount) public {
+        require(users[msg.sender].stakedAmount > 0, "No tokens staked");
+        require(amount > 0, "Amount must be greater than 0");
+        require( users[msg.sender].stakedAmount >= amount, "Insufficient staked amount" );
+
+        updateReward(msg.sender);
+        users[msg.sender].stakedAmount -= amount;
+        totalStaked -= amount;
+        bool success = stakingToken.transfer(msg.sender, amount);
+        require(success, "Withdrawing tokens failed");
+    }
+
+    function withdrawAll() public {
+        require(users[msg.sender].stakedAmount > 0, "No tokens staked");
+
+        updateReward(msg.sender);
+        uint256 amount = users[msg.sender].stakedAmount;
+        users[msg.sender].stakedAmount = 0;
+        totalStaked -= amount;
+        bool success = stakingToken.transfer(msg.sender, amount);
+        require(success, "Withdrawing tokens failed");
+    }
     
+    function getUserStakedAmount(address user) public view returns (uint256) {
+        return users[user].stakedAmount;
+    }
+
+    function getUserRewards(address user) public view returns (uint256) {
+        return users[user].rewards;
+    }
     
+
 }
