@@ -6,7 +6,7 @@ import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, Typed
   
 
   export interface StakingProtocolInterface extends Interface {
-    getFunction(nameOrSignature: "addRewards" | "claimRewards" | "getUserRewards" | "getUserStakedAmount" | "lastRewardTime" | "owner" | "periodFinish" | "rewardDuration" | "rewardRate" | "rewardToken" | "setRewardRate" | "stake" | "stakingToken" | "users" | "withdrawAll" | "withdrawAmount"): FunctionFragment;
+    getFunction(nameOrSignature: "addRewards" | "claimRewards" | "getUserRewards" | "getUserStakedAmount" | "lastRewardTime" | "owner" | "periodFinish" | "rewardDuration" | "rewardRate" | "rewardToken" | "stake" | "stakingToken" | "users" | "withdrawAll" | "withdrawAmount"): FunctionFragment;
 
     
 
@@ -20,7 +20,6 @@ encodeFunctionData(functionFragment: 'periodFinish', values?: undefined): string
 encodeFunctionData(functionFragment: 'rewardDuration', values?: undefined): string;
 encodeFunctionData(functionFragment: 'rewardRate', values?: undefined): string;
 encodeFunctionData(functionFragment: 'rewardToken', values?: undefined): string;
-encodeFunctionData(functionFragment: 'setRewardRate', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'stake', values: [BigNumberish]): string;
 encodeFunctionData(functionFragment: 'stakingToken', values?: undefined): string;
 encodeFunctionData(functionFragment: 'users', values: [AddressLike]): string;
@@ -37,7 +36,6 @@ decodeFunctionResult(functionFragment: 'periodFinish', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'rewardDuration', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'rewardRate', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'rewardToken', data: BytesLike): Result;
-decodeFunctionResult(functionFragment: 'setRewardRate', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'stake', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'stakingToken', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'users', data: BytesLike): Result;
@@ -161,14 +159,6 @@ decodeFunctionResult(functionFragment: 'withdrawAmount', data: BytesLike): Resul
     
 
     
-    setRewardRate: TypedContractMethod<
-      [_rewardRate: BigNumberish, ],
-      [void],
-      'nonpayable'
-    >
-    
-
-    
     stake: TypedContractMethod<
       [amount: BigNumberish, ],
       [void],
@@ -260,11 +250,6 @@ getFunction(nameOrSignature: 'rewardToken'): TypedContractMethod<
       [],
       [string],
       'view'
-    >;
-getFunction(nameOrSignature: 'setRewardRate'): TypedContractMethod<
-      [_rewardRate: BigNumberish, ],
-      [void],
-      'nonpayable'
     >;
 getFunction(nameOrSignature: 'stake'): TypedContractMethod<
       [amount: BigNumberish, ],

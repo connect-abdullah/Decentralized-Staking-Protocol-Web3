@@ -6,6 +6,33 @@ Users stake one ERC20 token and earn another ERC20 token as rewards. Rewards are
 
 ---
 
+## Run locally (single command)
+
+From the repo root:
+
+```bash
+npm run dev
+```
+
+This starts a Hardhat node (if needed), deploys mock ERC20s + `StakingProtocol`, syncs the ABI into `frontend/src/abi/`, writes `frontend/.env.local`, and runs the Next.js app.
+
+MetaMask setup:
+
+* Network name: Hardhat Local
+* RPC URL: `http://127.0.0.1:8545`
+* Chain ID: `31337`
+* Import Hardhat account #0 as the contract owner
+
+ABI-only sync (after compile):
+
+```bash
+npm run sync-abi
+```
+
+The frontend never deploys contracts.
+
+---
+
 ## Overview
 
 The protocol separates **reward accounting** from **reward funding**.

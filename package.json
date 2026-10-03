@@ -1,0 +1,12 @@
+{
+  "name": "decentralized_staking_protocol",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Staking protocol — local deploy, ABI sync, and frontend",
+  "scripts": {
+    "dev": "./dev.sh",
+    "sync-abi": "node scripts/sync-abi.mjs",
+    "deploy:local": "npm --prefix backend run deploy:local",
+    "frontend": "npm --prefix frontend run dev"
+  }
+}
