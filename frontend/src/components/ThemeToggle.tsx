@@ -8,7 +8,7 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      className="btn btn-secondary px-3 py-2"
+      className="btn btn-secondary !size-9 !p-0"
       onClick={toggleTheme}
       aria-label="Toggle theme"
     >

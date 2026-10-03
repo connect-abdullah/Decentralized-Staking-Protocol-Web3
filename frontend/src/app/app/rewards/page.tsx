@@ -18,23 +18,20 @@ export default function RewardsPage() {
           </p>
           <h1 className="mt-2 text-4xl tracking-tight">Earnings</h1>
           <p className="muted mt-2 text-sm">
-            Historical reward indexes are not available from this ABI. Session
-            transaction results appear on the Activity page.
+            Claimable {data.rwdSymbol} grows with your stake until the reward
+            period ends. Transaction results appear on the Activity page.
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           <StatBlock
             label="Staked"
             value={`${data.formatStaked} ${data.stkSymbol}`}
           />
           <StatBlock
-            label="Earned (on-chain)"
-            value={`${data.formatRewards} ${data.rwdSymbol}`}
-          />
-          <StatBlock
             label="Claimable"
-            value={`${data.formatRewards} ${data.rwdSymbol}`}
+            value={`${data.formatClaimable} ${data.rwdSymbol}`}
+            hint="Grows until the period ends"
           />
         </div>
 

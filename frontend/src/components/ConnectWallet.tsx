@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Copy, LogOut, Wallet } from "lucide-react";
+import { Check, Copy, LogOut, Wallet } from "lucide-react";
 import { BaseError } from "viem";
 import { useAccount, useConnect, useDisconnect, type Connector } from "wagmi";
 import { useIsClient } from "@/lib/useIsClient";
@@ -85,7 +85,7 @@ export function ConnectWallet({ className }: { className?: string }) {
     const onTarget = chainId === targetChain.id;
     return (
       <div className={cn("flex flex-wrap items-center gap-2", className)}>
-        <div className="surface flex items-center gap-2 px-3 py-2 text-sm">
+        <div className="surface flex h-9 items-center gap-2 px-3 text-sm">
           <Wallet size={16} className="text-[var(--violet)]" />
           <span className="font-[family-name:var(--font-mono)]">
             {shortenAddress(address)}
@@ -97,24 +97,23 @@ export function ConnectWallet({ className }: { className?: string }) {
         </div>
         <button
           type="button"
-          className="btn btn-secondary px-3 py-2 text-sm"
+          className="btn btn-secondary !size-9 !p-0"
           onClick={async () => {
             await navigator.clipboard.writeText(address);
             setCopied(true);
             window.setTimeout(() => setCopied(false), 1200);
           }}
-          aria-label="Copy address"
+          aria-label={copied ? "Copied" : "Copy address"}
         >
-          <Copy size={14} />
-          {copied ? "Copied" : "Copy"}
+          {copied ? <Check size={14} /> : <Copy size={14} />}
         </button>
         <button
           type="button"
-          className="btn btn-ghost px-3 py-2 text-sm"
+          className="btn btn-ghost !size-9 !p-0 text-[var(--danger)]"
           onClick={() => disconnect()}
+          aria-label="Disconnect"
         >
           <LogOut size={14} />
-          Disconnect
         </button>
       </div>
     );

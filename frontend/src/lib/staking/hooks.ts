@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import type { Address } from "viem";
 import { BaseError } from "viem";
 import {
   useAccount,
+  usePublicClient,
   useReadContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { contractAddress } from "@/lib/staking/contract";
 import { stakingApi } from "@/lib/staking/api";
+import { targetChain } from "@/lib/wagmi";
 
 export function useStakingOwner() {
   return useReadContract({
@@ -82,6 +85,43 @@ export function useUserPosition(user?: Address) {
     ...stakingApi.reads.users(user ?? "0x0000000000000000000000000000000000000000"),
     args: user ? [user] : undefined,
     query: { enabled: Boolean(contractAddress && user) },
+  });
+}
+
+export function useSecondClock() {
+  const [now, setNow] = useState<bigint | undefined>(undefined);
+
+  useEffect(() => {
+    const tick = () => setNow(BigInt(Math.floor(Date.now() / 1000)));
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return now;
+}
+
+/** Slots 0 and 1 are totalStaked and rewardPerToken in StakingProtocol. */
+export function useGlobalRewardIndexes() {
+  const client = usePublicClient({ chainId: targetChain.id });
+
+  return useQuery({
+    queryKey: ["staking", "reward-indexes", contractAddress],
+    enabled: Boolean(client && contractAddress),
+    refetchInterval: 4_000,
+    queryFn: async () => {
+      if (!client || !contractAddress) {
+        throw new Error("Staking contract is not configured.");
+      }
+      const [totalRaw, perTokenRaw] = await Promise.all([
+        client.getStorageAt({ address: contractAddress, slot: "0x0" }),
+        client.getStorageAt({ address: contractAddress, slot: "0x1" }),
+      ]);
+      return {
+        totalStaked: BigInt(totalRaw ?? "0x0"),
+        rewardPerToken: BigInt(perTokenRaw ?? "0x0"),
+      };
+    },
   });
 }
 

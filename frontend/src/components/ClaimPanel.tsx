@@ -84,14 +84,14 @@ export function ClaimPanel() {
     <section className="surface fade-in space-y-5 p-6">
       <div>
         <p className="muted text-xs uppercase tracking-[0.14em]">
-          On-chain rewards
+          Claimable
         </p>
         <h2 className="mt-2 font-[family-name:var(--font-mono)] text-4xl tracking-tight">
-          {data.formatRewards} {data.rwdSymbol}
+          {data.formatClaimable} {data.rwdSymbol}
         </h2>
         <p className="muted mt-3 text-sm">
-          This balance is the last on-chain checkpoint. Claiming updates it
-          through the new block and transfers the rewards.
+          This amount grows every second while the reward period is active.
+          Claiming transfers it to your wallet.
         </p>
       </div>
 
@@ -106,13 +106,6 @@ export function ClaimPanel() {
 
       {positionReady && staked <= 0n ? (
         <p className="muted text-sm">Stake tokens before claiming rewards.</p>
-      ) : null}
-
-      {canClaim && checkpoint <= 0n ? (
-        <p className="muted text-sm">
-          The checkpoint is still zero because no block has passed since you
-          staked. Claim Rewards writes the earnings and sends them to your wallet.
-        </p>
       ) : null}
 
       {write.statusLabel === "Confirmed" ? (

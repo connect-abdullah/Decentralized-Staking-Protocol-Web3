@@ -14,9 +14,6 @@ import type { Address } from "viem";
 
 const baseLinks = [
   { href: "/app", label: "Dashboard" },
-  { href: "/app/stake", label: "Stake" },
-  { href: "/app/rewards", label: "Rewards" },
-  { href: "/app/withdraw", label: "Withdraw" },
   { href: "/app/activity", label: "Activity" },
 ];
 

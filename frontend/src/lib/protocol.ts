@@ -3,16 +3,20 @@
 import type { Address } from "viem";
 import { formatTokenAmount } from "@/lib/utils";
 import {
+  useGlobalRewardIndexes,
   useLastRewardTime,
   usePeriodFinish,
   useRewardDuration,
   useRewardRate,
   useRewardToken,
+  useSecondClock,
   useStakingOwner,
   useStakingToken,
+  useUserPosition,
   useUserRewards,
   useUserStakedAmount,
 } from "@/lib/staking/hooks";
+import { previewClaimable, readRewardPosition } from "@/lib/staking/rewards";
 import {
   useTokenBalance,
   useTokenDecimals,
@@ -32,6 +36,9 @@ export function useProtocolData() {
   const lastRewardTimeQuery = useLastRewardTime();
   const stakedQuery = useUserStakedAmount(address);
   const rewardsQuery = useUserRewards(address);
+  const positionQuery = useUserPosition(address);
+  const indexesQuery = useGlobalRewardIndexes();
+  const now = useSecondClock();
 
   const stakingToken = stakingTokenQuery.data as Address | undefined;
   const rewardToken = rewardTokenQuery.data as Address | undefined;
@@ -49,6 +56,30 @@ export function useProtocolData() {
   const stkSymbol = (stakingSymbol.data as string | undefined) ?? "STK";
   const rwdSymbol = (rewardSymbol.data as string | undefined) ?? "RWD";
 
+  const position = readRewardPosition(positionQuery.data);
+  const rewardRate = rewardRateQuery.data as bigint | undefined;
+  const periodFinish = periodFinishQuery.data as bigint | undefined;
+  const lastRewardTime = lastRewardTimeQuery.data as bigint | undefined;
+  const claimable =
+    position &&
+    indexesQuery.data &&
+    rewardRate !== undefined &&
+    periodFinish !== undefined &&
+    lastRewardTime !== undefined &&
+    now !== undefined
+      ? previewClaimable({
+          totalStaked: indexesQuery.data.totalStaked,
+          rewardPerToken: indexesQuery.data.rewardPerToken,
+          rewardRate,
+          lastRewardTime,
+          periodFinish,
+          stakedAmount: position.stakedAmount,
+          storedRewards: position.rewards,
+          userRewardsPaid: position.userRewardsPaid,
+          timestamp: now,
+        })
+      : undefined;
+
   const refetchAll = async () => {
     await Promise.all([
       ownerQuery.refetch(),
@@ -60,6 +91,8 @@ export function useProtocolData() {
       lastRewardTimeQuery.refetch(),
       stakedQuery.refetch(),
       rewardsQuery.refetch(),
+      positionQuery.refetch(),
+      indexesQuery.refetch(),
       walletStakeBalance.refetch(),
       walletRewardBalance.refetch(),
     ]);
@@ -79,14 +112,15 @@ export function useProtocolData() {
     rwdSymbol,
     staked: stakedQuery.data as bigint | undefined,
     rewards: rewardsQuery.data as bigint | undefined,
-    rewardRate: rewardRateQuery.data as bigint | undefined,
+    claimable,
+    rewardRate,
     rewardDuration: rewardDurationQuery.data as bigint | undefined,
-    periodFinish: periodFinishQuery.data as bigint | undefined,
-    lastRewardTime: lastRewardTimeQuery.data as bigint | undefined,
+    periodFinish,
+    lastRewardTime,
     walletStakeBalance: walletStakeBalance.data as bigint | undefined,
     walletRewardBalance: walletRewardBalance.data as bigint | undefined,
     formatStaked: formatTokenAmount(stakedQuery.data as bigint | undefined, stkDecimals),
-    formatRewards: formatTokenAmount(rewardsQuery.data as bigint | undefined, rwdDecimals),
+    formatClaimable: formatTokenAmount(claimable, rwdDecimals),
     formatRate: formatTokenAmount(rewardRateQuery.data as bigint | undefined, rwdDecimals, 6),
     formatWalletStake: formatTokenAmount(
       walletStakeBalance.data as bigint | undefined,

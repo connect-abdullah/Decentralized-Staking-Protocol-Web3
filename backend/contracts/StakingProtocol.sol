@@ -133,7 +133,29 @@ contract StakingProtocol {
     }
 
     function getUserRewards(address user) public view returns (uint256) {
-        return users[user].rewards;
+        User memory userData = users[user];
+    
+        uint256 currentRewardPerToken = rewardPerToken;
+    
+        uint256 applicableTime =
+            block.timestamp < periodFinish
+                ? block.timestamp
+                : periodFinish;
+    
+        if (totalStaked > 0 && applicableTime > lastRewardTime) {
+            uint256 elapsedTime = applicableTime - lastRewardTime;
+    
+            currentRewardPerToken +=
+                (elapsedTime * rewardRate * PRECISION)
+                / totalStaked;
+        }
+    
+        uint256 newReward =
+            ((currentRewardPerToken - userData.userRewardsPaid)
+            * userData.stakedAmount)
+            / PRECISION;
+    
+        return userData.rewards + newReward;
     }
     
 
