@@ -71,11 +71,6 @@ contract StakingProtocol {
         periodFinish = block.timestamp + duration;
     }
 
-    function setRewardRate(uint256 _rewardRate) public {
-        require(msg.sender == owner, "Only owner can set reward rate");
-        rewardRate = _rewardRate;
-    }
-
     function updateReward(address user) internal {
         // get the correct time for the reward calculation, below periodFinish
         uint256 applicableTime = block.timestamp < periodFinish ? block.timestamp : periodFinish;
@@ -99,11 +94,11 @@ contract StakingProtocol {
     }
 
     function claimRewards() public {
-        require(block.timestamp < periodFinish, "Reward period has ended");
+        updateReward(msg.sender);
+
         require(users[msg.sender].rewards > 0, "No rewards to claim");
         require(users[msg.sender].stakedAmount > 0, "No tokens staked");
 
-        updateReward(msg.sender);
         uint256 rewardsToSend = users[msg.sender].rewards;
         users[msg.sender].rewards = 0; // Reset rewards to 0 before claiming
         bool success = rewardToken.transfer(msg.sender, rewardsToSend);

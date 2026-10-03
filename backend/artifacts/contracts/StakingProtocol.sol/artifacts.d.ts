@@ -15,7 +15,7 @@ export interface StakingProtocol$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/StakingProtocol.sol";
-  readonly buildInfoId: "solc-0_8_28-93a9c6b08e6691158f5747cb7de80d69a89d1a15";
+  readonly buildInfoId: "solc-0_8_28-9832fb146e4c8c5aec8f24b3758fede9a09e16ec";
 };
 
 import "hardhat/types/artifacts";

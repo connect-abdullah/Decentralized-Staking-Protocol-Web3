@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "cli": "tsx scripts/cli.ts",
+    "compile": "hardhat compile",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "sync-abi": "node ../scripts/sync-abi.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,6 +15,8 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.2.0",
+    "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^4.0.0",
     "@types/node": "^22.20.1",
     "hardhat": "^3.14.0",
     "tsx": "^4.23.12",
