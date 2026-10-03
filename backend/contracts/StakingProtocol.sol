@@ -102,7 +102,6 @@ contract StakingProtocol {
         require(block.timestamp < periodFinish, "Reward period has ended");
         require(users[msg.sender].rewards > 0, "No rewards to claim");
         require(users[msg.sender].stakedAmount > 0, "No tokens staked");
-        require(users[msg.sender].owner == msg.sender, "You are not the owner of the staked tokens");
 
         updateReward(msg.sender);
         uint256 rewardsToSend = users[msg.sender].rewards;
@@ -115,7 +114,6 @@ contract StakingProtocol {
         require(users[msg.sender].stakedAmount > 0, "No tokens staked");
         require(amount > 0, "Amount must be greater than 0");
         require(users[msg.sender].stakedAmount >= amount, "Insufficient staked amount" );
-        require(users[msg.sender].owner == msg.sender, "You are not the owner of the staked tokens");
 
         updateReward(msg.sender);
         users[msg.sender].stakedAmount -= amount;
